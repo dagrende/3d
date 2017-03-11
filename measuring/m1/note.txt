@@ -1,0 +1,12 @@
+measures real -- model
+outer
+  width 76.4 -- 76.3
+  height 16.1 -- 16
+  depth 10.3 -- 10.2
+inner
+  width 73.6 -- 74.3
+  height 15 -- 15
+  depth 8 -- 8.2
+usb hole
+  depth 1.9 -- 2
+  width 9.9 -- 10.4

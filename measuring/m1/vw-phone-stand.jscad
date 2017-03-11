@@ -39,24 +39,24 @@ function main() {
     difference(
       union(
         // base,
-        ccube() // outer holder
+        ccube()
           .scale([phoneWidth + 2, phoneThickness + 2, holderHeight])
           .translate([0, 0, 1])
         //   ,
         // difference(
-        //   ccube() // outer usb connector handle box
+        //   ccube()
         //     .scale([usbHandleWidth + 2, usbHandleHeight + 2, usbHandleDepth + 2])
         //     .translate([0, 0, holderHeight]),
-        //   ccube() // inner usb connector handle box
+        //   ccube()
         //     .scale([usbHandleWidth, usbHandleHeight + 2, usbHandleDepth + 1])
         //     .translate([0, 1, holderHeight]),
-        //   ccube() // inlet for usb connector handle cable
+        //   ccube()
         //     .scale([usbHandleCableDiameter, usbHandleCableDiameter + 10, 20])
         //     .translate([0, 0, holderHeight + usbHandleDepth - 10])
         // )
       ),
 
-      ccube() // inner holder
+      ccube()
         .scale([phoneWidth, phoneThickness, holderHeight]),
       usb.translate([0, -phoneThickness / 2 + usbCenterFromFront, holderHeight])
       ,
@@ -74,5 +74,11 @@ function main() {
     top
   );
 
+  // return usb;
+
   return all.rotateZ(90);
+
+  // return intersection(top, cube()
+  //   .translate([-.5, -.5, 0])
+  //   .scale([phoneWidth + 10, phoneThickness + 10, 100]))
 }
