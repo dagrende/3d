@@ -1,0 +1,14 @@
+comments on current version
+--- problem
+- sprack vid rensning i ställets vertikal-horisontal-övergång i mitten
+- usb-hål exakt passning om man trycker rakt in - snett in går knappt när man skall sätta in kontakten
+- usb-kontakt kommer inte in tillräckligt i telefonen - det blir inte kontakt för laddning
+- skalet kring usb-kontakten
+  - är ca .7mm för trång i bredd
+  - sladd-ändans stopp är för låg (kort) så kontakten måste pressas in
+--- åtgärdsförslag
+- byt lilla usb-kontakt-hålet mot ett lika stort som hela usb-kontakt-handtagets
+width/depth - då kommer den in helt i telefonen
+- byt rektangulära hålet för kontakten mot ett runt som bara går upp halva
+depth, så att kontakten inte behöver luta så mycket då den sätts in, men ändå hindras från att åka ned då telefonen sätts i
+-
