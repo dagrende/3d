@@ -7,15 +7,18 @@ function main() {
   var holderHeight = 16;
   var phoneWidth = 72.5 + 0.7;
   var phoneDepth = 8 + .2;
+  var phoneCornerRadius = 9;
   var usbCenterFromFront = 4.11;
   var holderOverlapFront = 1.5;
   var holderOverlapBack = 10;
   var usbWidth = 8.2 + .5;
   var usbDepth = 2.5 + .2;
-  var usbHandleWidth = 12.5;
-  var usbHandleHeight = 6.3;
-  var usbHandleDepth = 23.5;
+  var usbHandleWidth = 12.5 + .7;
+  var usbHandleDepth = 6.3;
+  var usbHandleHeight = 23.5;
   var usbHandleCableDiameter = 6.3;
+  var holderOutsideWidth = 5;
+  var holderWallThickness = 1;
 
   function ccube() {return cube().translate([-.5, -.5, 0])}
   function ccircle() {return circle(.5).translate([-.5, -.5])}
@@ -23,44 +26,69 @@ function main() {
   var base = cylinder({r: 50, h: 1});
 
   var yOffset = -phoneDepth / 2 + usbCenterFromFront;
-  console.log(yOffset);
-  var usbProfile = hull(
-    ccircle().scale(usbDepth).translate([-(usbWidth - usbDepth) / 2, 0, 0]),
-    ccircle().scale(usbDepth).translate([(usbWidth - usbDepth) / 2, 0, 0])
-  );
-  var usb = linear_extrude({ height: 3 }, usbProfile);
 
-  var bite = cylinder({r: .5})
-    .translate([0, 0, -.5])
-    .rotateX(90).scale(25)
-    .translate([0, 0, 20]);
+  var phoneBody = union(
+    difference(
+      ccube() // phone body
+        .scale([phoneWidth, phoneDepth, holderHeight]),
+      ccube() // phone body
+        .scale([phoneCornerRadius, phoneDepth, phoneCornerRadius])
+        .translate([-(phoneWidth - phoneCornerRadius) / 2, 0, holderHeight - phoneCornerRadius]),
+      ccube() // phone body
+        .scale([phoneCornerRadius, phoneDepth, phoneCornerRadius])
+        .translate([(phoneWidth - phoneCornerRadius) / 2, 0, holderHeight - phoneCornerRadius])
+    ),
+    cylinder({r: phoneCornerRadius, h: phoneDepth})
+      .translate([0, 0, -phoneDepth / 2])
+      .rotateX(90)
+      .translate([-(phoneWidth) / 2 + phoneCornerRadius, 0, holderHeight - phoneCornerRadius]),
+    cylinder({r: phoneCornerRadius, h: phoneDepth})
+      .translate([0, 0, -phoneDepth / 2])
+      .rotateX(90)
+      .translate([(phoneWidth) / 2 - phoneCornerRadius, 0, holderHeight - phoneCornerRadius])
 
-  // bite = ccube().scale([20, 100, 25]).translate([0, 0, 10]);
+    )
 
   var top =
     difference(
       union(
-        // base,
-        ccube() // outer holder
-          .scale([phoneWidth + 2, phoneDepth + 2, holderHeight])
+        base,
+        ccube() // outer holder, long part
+          .scale([phoneWidth + holderOutsideWidth * 2, holderWallThickness, holderHeight + holderOutsideWidth])
           .translate([0, 0, 1]),
-        ccube() // outer usb connector handle box
-          .scale([usbHandleWidth + 2, usbHandleHeight + 1, usbHandleDepth + 2])
-          .translate([0, 0, holderHeight])
+
+        ccube() // outer holder, short part
+          .scale([holderWallThickness, phoneDepth + holderOutsideWidth * 2, holderHeight + holderOutsideWidth])
+          .translate([-phoneWidth / 3, 0, 1]),
+        // ccube() // outer holder, short part
+        //   .scale([holderWallThickness, phoneDepth + holderOutsideWidth * 2, holderHeight + holderOutsideWidth])
+        //   .translate([-usbHandleWidth / 2, 0, 1]),
+        ccube() // outer holder, short part
+          .scale([holderWallThickness, phoneDepth + holderOutsideWidth * 2, holderHeight + holderOutsideWidth])
+          .translate([0, 0, 1]),
+        // ccube() // outer holder, short part
+        //   .scale([holderWallThickness, phoneDepth + holderOutsideWidth * 2, holderHeight + holderOutsideWidth])
+        //   .translate([usbHandleWidth / 2, 0, 1]),
+        ccube() // outer holder, short part
+          .scale([holderWallThickness, phoneDepth + holderOutsideWidth * 2, holderHeight + holderOutsideWidth])
+          .translate([phoneWidth / 3, 0, 1])
+        //   ,
+        //
+        // ccube() // outer usb connector handle box
+        //   .scale([usbHandleWidth + 2, usbHandleDepth + 1, usbHandleHeight + 2])
+        //   .translate([0, 0, holderHeight])
       ),
 
-      ccube() // inner usb connector handle box
-        .scale([usbHandleWidth, usbHandleHeight + 1, usbHandleDepth + .5])
-        .translate([0, .5, holderHeight + .5]),
-      ccube() // inlet for usb connector handle cable
-        .scale([usbHandleCableDiameter, usbHandleCableDiameter + 10, 20])
-        .translate([0, 0, holderHeight + usbHandleDepth - 10]),
-      ccube() // inner holder
-        .scale([phoneWidth, phoneDepth, holderHeight]),
-      usb.translate([0, -phoneDepth / 2 + usbCenterFromFront, holderHeight]),
-      bite.translate([-20, 0, 0]),
-      bite.translate([20, 0, 0])
-   );
+      phoneBody
+      //,
+      // ccube() // inner usb connector handle box
+      //   .scale([usbHandleWidth, usbHandleDepth + 1, usbHandleHeight + .5])
+      //   .translate([0, .5, holderHeight + .5]),
+      // ccube() // inlet for usb connector handle cable
+      //   .scale([usbHandleCableDiameter, usbHandleCableDiameter + 10, 20])
+      //   .translate([0, 0, holderHeight + usbHandleHeight - 10]),
+
+  );
 
   var edge = difference(
     cylinder({r: mugHoleDown10Diameter / 2, h: 10}),
@@ -71,6 +99,6 @@ function main() {
     // edge,
     top
   );
-
-  return all.rotateZ(90);
+// return phoneBody;
+  return all.intersect(ccube().scale([90, 30, 100]));
 }
