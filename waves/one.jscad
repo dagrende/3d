@@ -2,15 +2,21 @@ function main() {
   function waves(r, v, x, y, z, i, j) {
     return [x, y, cos(r * 360 * 5) / (20 + 300 * r * r * r)];
   };
-  var n = 40; // ring count
-  var m = 70; // sector count
 
-  return fundisk({n: 40, m: 70, f: waves});
+  return fundisc({n: 50, m: 70, f: waves});
 
-  function fundisk(params) {
-    var defaultConfig = {n: 16, m: 16, f: function(r, v, x, y, z, i, j) {return [x, y, z]}}
+  function fundisc(params) {
+    var defaultConfig = {
+      n: 16,  // circle count
+      m: 16,  // angle count
+      f: function(r, v, x, y, z, i, j) {return [x, y, z]}
+    };
     var config = Object.assign(defaultConfig, params);
-    var n = config.n, m = config.m, f = config.f;
+    var maxZ = -100000.0;
+    var
+      n = config.n,
+      m = config.m,
+      f = config.f;
 
     var points = [f(0, 0, 0, 0, 0, 0, 0)];
     for (var i = 1; i <= n; i++) {
@@ -19,9 +25,18 @@ function main() {
         var v = j * 360 / m;
         var x = r * cos(v);
         var y = r * sin(v);
-        points.push(f(r, v, x, y, 0, i, j));
+        var funPoint = f(r, v, x, y, 0, i, j);
+        points.push(funPoint);
+        if (maxZ < funPoint[2]) maxZ = funPoint[2];
       }
     }
+    // make cylinder side up from disc edge
+    var maxZPlus = maxZ + 0.1;
+    for (var j = 0; j < m; j++) {
+      var funPoint = points[points.length - m];
+      points.push([funPoint[0], funPoint[1], maxZPlus]);
+    }
+    n++;  // count an extra circle for the cylinder top edge
 
     var triangles = [];
     for (var j = 0; j < m; j++) {
@@ -42,15 +57,15 @@ function main() {
       }
     }
 
-    // connect all edge points to a top
-    // points.push([0, 0, 1]);
-    // for (var j = 0; j < m; j++) {
-    //   triangles.push([
-    //     points.length - 1,
-    //     points.length - 2 - j,
-    //     points.length - 2 - (j + 1) % m
-    //   ]);
-    // }
+    // make cylinder top
+    points.push([0, 0, maxZPlus]);
+    for (var j = 0; j < m; j++) {
+      triangles.push([
+        points.length - 1,
+        points.length - 2 - j,
+        points.length - 2 - (j + 1) % m
+      ]);
+    }
 
     console.log('points', points);
     console.log('triangles', triangles)
