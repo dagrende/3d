@@ -1,9 +1,17 @@
 function main() {
+  var rmax = 55;
   function waves(r, v, x, y, z, i, j) {
-    return [x, y, cos(r * 360 * 5) / (20 + 300 * r * r * r)];
+    if (r < 29 / rmax) {
+      z = 0;
+    } else {
+      z = cos(r * 360 * 5 * r * r * r) / (20 + 300 * r * r * r);
+    }
+    return [x * rmax, y * rmax, z * rmax];
   };
 
-  return fundisc({n: 50, m: 70, f: waves});
+  var nr = 50, nv = 100;
+
+  return fundisc({n: nr, m: nv, f: waves});
 
   function fundisc(params) {
     var defaultConfig = {
@@ -31,7 +39,7 @@ function main() {
       }
     }
     // make cylinder side up from disc edge
-    var maxZPlus = maxZ + 0.1;
+    var maxZPlus = maxZ + .01;
     for (var j = 0; j < m; j++) {
       var funPoint = points[points.length - m];
       points.push([funPoint[0], funPoint[1], maxZPlus]);
@@ -71,6 +79,11 @@ function main() {
     console.log('triangles', triangles)
 
 
-    return polyhedron({points: points, triangles: triangles}).rotateX(180);
+    return polyhedron({points: points, triangles: triangles})
+      .rotateX(180)
+      .translate([0, 0, maxZPlus + 10])
+      .union(cylinder({r: rmax, h: 5, fn: nv}).translate([0, 0, 5]))
+      .union(cylinder({r: rmax - 5, h: 5, fn: nv}))
+      ;
   }
 }
