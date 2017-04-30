@@ -1,7 +1,11 @@
 function main() {
+  var pusherDiam = 58,
+    pipeInnerDiam = 100,
+    pipeOuterDiam = 110;
+
   var rmax = 55;
   function waves(r, v, x, y, z, i, j) {
-    if (r < 29 / rmax) {
+    if (r < pusherDiam / 2 / rmax) {
       z = 0;
     } else {
       z = cos(r * 360 * 5 * r * r * r) / (20 + 300 * r * r * r);
@@ -9,9 +13,16 @@ function main() {
     return [x * rmax, y * rmax, z * rmax];
   };
 
-  var nr = 50, nv = 100;
+  // var nr = 50, nv = 100;
+  var nr = 300, nv = 300;
 
-  return fundisc({n: nr, m: nv, f: waves});
+  return fundisc({n: nr, m: nv, f: waves})
+    .subtract(cylinder({r: pipeInnerDiam / 2 - 3, h: 8}))
+    .union(cylinder({r: pusherDiam / 2 + 3, h: 5}).translate([0, 0, 5]))
+    .subtract(cylinder({r: pusherDiam / 2, h: 20})
+      .translate([0, 0, 8]))
+    // .subtract(cube({size: 100}))
+    ;
 
   function fundisc(params) {
     var defaultConfig = {
@@ -82,8 +93,8 @@ function main() {
     return polyhedron({points: points, triangles: triangles})
       .rotateX(180)
       .translate([0, 0, maxZPlus + 10])
-      .union(cylinder({r: rmax, h: 5, fn: nv}).translate([0, 0, 5]))
-      .union(cylinder({r: rmax - 5, h: 5, fn: nv}))
+      .union(cylinder({r: pipeOuterDiam / 2, h: 5, fn: nv}).translate([0, 0, 5]))
+      .union(cylinder({r: pipeInnerDiam / 2, h: 5, fn: nv}))
       ;
   }
 }
