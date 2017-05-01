@@ -8,7 +8,7 @@ function main() {
     pillarDiam = 12.66,
     baseHeight = 15,
     baseWidth = 100,
-    baseDepth = 120
+    baseDepth = 120,
     steerPinHoleDiam = 6,
     steerDeviceLength = 70,
     fixedPartHeight = 8,
@@ -35,7 +35,7 @@ function main() {
       // motor mounting holes
       .subtract(motorHoles().translate([motorHolderSide / 2, motorHolderLength - motorHolderSide / 2, 0]))
       .translate([0, 0, motorHolderHeightElevation])
-      .setColor(.99, .99, .99));
+      .setColor(0.99, 0.99, 0.99));
   }
   // fixed part
   parts.push(cube().scale([fixedPartWidth, fixedPartLength, fixedPartHeight])
@@ -52,26 +52,24 @@ function main() {
     .subtract(cylinder({r: angleFixThreadDiam / 2, h: 100}).rotateY(90).translate([0, fixedPartLength - 5, fixedPartHeight / 2]))
     .subtract(cylinder({r: angleFixPlugDiam / 2, h: 100}).rotateY(90).translate([fixedPartWidth / 2, fixedPartLength - 5, fixedPartHeight / 2]))
     .translate([wallThickness + fixedPartSideClearance, -fixedPartExtend, fixedPartElevation])
-    .setColor(.99, .99, .99));
+    .setColor(0.99, 0.99, 0.99));
   // pillar
   parts.push(cylinder({r: pillarDiam / 2, h: pillarHeight, fn: 32}).translate([motorHolderSide / 2, motorPillarY, 0])
-    .setColor(.5, .5, .5));
+    .setColor(0.5, 0.5, 0.5));
   // mounting base
   parts.push(cube().scale([baseWidth, baseDepth, baseHeight]).translate([motorHolderSide / 2 - baseWidth / 2, 0, 0])
-    .subtract(cylinder({r: .5, h: 100})
+    .subtract(cylinder({r: 0.5, h: 100})
     .translate([motorHolderSide / 2, motorHolderLength - motorHolderSide / 2, 0]))
-    .setColor(.74, .50, .5)
+    .setColor(0.74, 0.50, 0.5)
   );
   return union(parts);
-  // .subtract(cube().scale(1000).translate([motorHolderSide / 2, -500, 0]))
-  ;
 }
 function motorHoles() {
   var r1 = 5, r2 = 1.5, d = 8;
   return union(
     cylinder().scale([r1, r1, 100]),
     cylinder().scale([r2, r2, 100]).translate([-d, 0, 0]),
-    cylinder().scale([r2, r2, 100]).translate([d, 0, 0]),
+    cylinder().scale([r2, r2, 100]).translate([d, 0, 0])
   );
 }
 
@@ -79,5 +77,5 @@ function squarePipe(width, height, length, thickness) {
   return cube().scale([width, length, height])
     .subtract(cube()
       .scale([width - 2 * thickness, length, height - 2 * thickness])
-        .translate([thickness, 0, thickness]))
+        .translate([thickness, 0, thickness]));
 }
