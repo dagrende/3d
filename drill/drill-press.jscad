@@ -6,6 +6,7 @@ function main() {
     wallThickness = 2,
     pillarHeight = 110,
     pillarDiam = 12.66,
+    pillarHoleDiam = 14,
     baseHeight = 15,
     baseWidth = 100,
     baseDepth = 120,
@@ -29,7 +30,7 @@ function main() {
   if (true) {
     parts.push(squarePipe(motorHolderSide, motorHolderSide, motorHolderLength, wallThickness)
       // pillar hole
-      .subtract(cylinder({r: pillarDiam / 2, h: 100}).translate([motorHolderSide / 2, motorPillarY, 0]))
+      .subtract(cylinder({r: pillarHoleDiam / 2, h: 100}).translate([motorHolderSide / 2, motorPillarY, 0]))
       // cut off for motor top
       .subtract(cube().scale(100).rotateX(45).translate([0, motorHolderLength, 0]))
       // motor mounting holes
@@ -40,7 +41,7 @@ function main() {
   // fixed part
   parts.push(cube().scale([fixedPartWidth, fixedPartLength, fixedPartHeight])
     // pillar hole
-    .subtract(cylinder({r: pillarDiam / 2, h: fixedPartHeight}).translate([motorHolderSide / 2 - fixedPartSideClearance - wallThickness, motorPillarY + fixedPartExtend, 0]))
+    .subtract(cylinder({r: pillarHoleDiam / 2, h: fixedPartHeight}).translate([motorHolderSide / 2 - fixedPartSideClearance - wallThickness, motorPillarY + fixedPartExtend, 0]))
     // pillar grip gap
     .subtract(cube().scale([pillarGripGapWidth, fixedPartExtend + motorPillarY, fixedPartHeight])
       .translate([motorHolderSide / 2 - fixedPartSideClearance - pillarGripGapWidth / 2 - fixedPartSideClearance, 0, 0]))
@@ -54,7 +55,8 @@ function main() {
     .translate([wallThickness + fixedPartSideClearance, -fixedPartExtend, fixedPartElevation])
     .setColor(0.99, 0.99, 0.99));
   // pillar
-  parts.push(cylinder({r: pillarDiam / 2, h: pillarHeight, fn: 32}).translate([motorHolderSide / 2, motorPillarY, 0])
+  parts.push(cylinder({r: pillarDiam / 2, h: pillarHeight, fn: 32})
+    .translate([motorHolderSide / 2, motorPillarY, 0])
     .setColor(0.5, 0.5, 0.5));
   // mounting base
   parts.push(cube().scale([baseWidth, baseDepth, baseHeight]).translate([motorHolderSide / 2 - baseWidth / 2, 0, 0])
