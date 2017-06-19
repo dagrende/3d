@@ -1,16 +1,11 @@
 function main() {
-  var pillarDiam = 15,
-    gliderOuterDiam = 19,
-    steps = 6,
-    stepHeight = 2;
+  var pillarDiam = 12.66 + 0.4,
+    gliderOuterDiam = pillarDiam + 4
+    gliderHeight = 15;
 
-  var glider = cylinder({r: gliderOuterDiam / 2, h: steps * stepHeight, fn:64});
+  return cube().translate([-0.5, -0.5, 0]).scale([gliderOuterDiam, gliderOuterDiam, gliderHeight])
+  // cylinder({r: gliderOuterDiam / 2, h: steps * stepHeight, fn:64})
+  .subtract(new cylinder({r:pillarDiam / 2, h: gliderHeight, fn:128}))
+  .rotateX(90).translate([0, 0, gliderOuterDiam / 2]);
 
-  for (let i = 0; i < steps; i++) {
-    let d = pillarDiam + i * .1;
-    console.log(i, d );
-    glider = glider.subtract(new cylinder({r:d / 2, h: stepHeight, fn:128}).translate([0, 0, i * stepHeight]));
-  }
-
-  return glider;
 }
