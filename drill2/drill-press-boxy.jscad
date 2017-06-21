@@ -29,7 +29,7 @@ function main() {
     upperHolderUp = springHeight + gliderHeight + fixedPartHeight,
     arcUp = upperHolderUp + gliderHeight / 2- arcRadius,
     barDiam = gliderOuterDiam - 2,
-    pillarClearance = 5,
+    pillarClearance = 10,
     sinkHoleDiam = 6,
     sinkHoleOut = (pillarDiam + sinkHoleDiam) / 2 + pillarClearance + 10;
 
@@ -41,22 +41,22 @@ function main() {
     // A side can be x, X, y, Y, z or Z, where x is min x side and X is max x side
     // Zx rounds the edge shared by the top
   function roundCornerCube(rexp) {
-
+    
   }
-return holder().translate([0, 0, gliderHeight + 1])
-  // return gliderAggregate(arcRadius + 30)
-  //   .union(
-  //     gliderAggregate(arcRadius).translate([0, 0, springHeight + gliderHeight + fixedPartHeight])
-  //   )
-  //   .union(cube().translate([-0.5, 0, 0])
-  //     .scale([gliderOuterDiam, arcRadius - gliderOuterDiam / 2 - pillarClearance, upperHolderUp])
-  //     .translate([0, gliderOuterDiam / 2 + pillarClearance, 0]))
-  //   .union(cylinder({r: motorHolderSide / 2, h: 16})
-  //     .subtract(cylinder({r: (motorHolderSide - 2 * wallThickness) / 2, h: 14}).translate([0, 0, 2]))
-  //     .translate([0, motorHolderLength, 0])).subtract(cylinder({r: (motorHolderSide - 2 * wallThickness) / 2, h: 14, fn:128})
-  //     .translate([0, motorHolderLength, 2])).subtract(motorHoles().translate([0, motorHolderLength, 0]))
-  //   .subtract(armHole({length: 100, d: 5, x1: sinkHoleOut + 2, x2: sinkHoleOut + 4, y: gliderHeight + fixedPartHeight / 2 + 2}))
-  //   // .union(holder().translate([0, 0, gliderHeight + 1]))
+
+  return gliderAggregate(arcRadius)
+    .union(
+      gliderAggregate(arcRadius).translate([0, 0, springHeight + gliderHeight + fixedPartHeight])
+    )
+    .union(cube().translate([-0.5, 0, 0])
+      .scale([gliderOuterDiam, arcRadius - gliderOuterDiam / 2 - pillarClearance, upperHolderUp])
+      .translate([0, gliderOuterDiam / 2 + pillarClearance, 0]))
+    // .union(cylinder({r: motorHolderSide / 2, h: 16})
+    //   .subtract(cylinder({r: (motorHolderSide - 2 * wallThickness) / 2, h: 14}).translate([0, 0, 2]))
+    //   .translate([0, motorHolderLength, 0])).subtract(cylinder({r: (motorHolderSide - 2 * wallThickness) / 2, h: 14, fn:128})
+    //   .translate([0, motorHolderLength, 2])).subtract(motorHoles().translate([0, motorHolderLength, 0]))
+    // .subtract(armHole({length: 100, d: 5, x1: sinkHoleOut + 2, x2: sinkHoleOut + 4, y: gliderHeight + fixedPartHeight / 2 + 2}))
+    // .union(holder().translate([0, 0, gliderHeight + 1]))
     .subtract(new cylinder({r:pillarDiam / 2, h: pillarHeight, fn:128}))
 
   function holder() {
