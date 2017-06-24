@@ -35,9 +35,10 @@ function main() {
     sinkHoleOut = (pillarDiam + sinkHoleDiam) / 2 + pillarClearance + 10,
     stemYSize = arcRadius - gliderOuterDiam / 2 - pillarClearance,
     innerRadius = 3,
-    motorHolderUp = 20
+    motorHolderUp = 13
     rightmost = gliderHeight + gliderOuterDiam / 2 + pillarClearance,
-    motorHolderOut = 12;
+    motorHolderOut = 12,
+    cutY = rightmost + innerRadius + 1;
 
   function gliderAggregate(out) {
     return cylinder({r: gliderOuterDiam / 2, h: gliderHeight, fn:64})
@@ -60,23 +61,30 @@ function main() {
     .union(
       gliderAggregate(arcRadius - stemYSize)
     )
+    // between top and bottom glider aggregate
     .union(stem.scale([gliderOuterDiam, 1, 1]))
-    .union(stem.scale([gliderOuterDiam - 10, 1, 1]).translate([0, -innerRadius, 0]))
+    // guiding bar gliding against holder
+    .union(stem.scale([gliderOuterDiam - 10, 1, 1]).translate([0, -innerRadius + 1, 0]))
 
-    // outer rounding on moving part corners
+    // outer rounding on glider aggregate-stem joint
     .union(outerCubeCyl.cube.intersect(outerCubeCyl.cylinder.translate([0, 0, 0]))
       .translate([0, gliderOuterDiam / 2 + pillarClearance, upperHolderUp]))
     .union(outerCubeCyl.cube.intersect(outerCubeCyl.cylinder.translate([0, 0, gliderHeight]))
       .translate([0, gliderOuterDiam / 2 + pillarClearance, 0]))
-    // inner rounding on moving part corners
+    // inner rounding on glider aggregate-stem joint
     .union(upperInnerCubeCyl
       .translate([0, gliderOuterDiam / 2 + pillarClearance - innerRadius, upperHolderUp - innerRadius]))
     .union(innerCubeCyl.cube.subtract(innerCubeCyl.cylinder.translate([0, 0, innerRadius]))
       .translate([0, gliderOuterDiam / 2 + pillarClearance - innerRadius, gliderHeight]))
+    .union(armHole({length: pillarHole + 4 + 4, d:4, x1: rightmost, y: motorHolderUp + 5}))
+    .union(armHole({length: pillarHole + 4 + 4, d:4, x1: rightmost - 5, y: motorHolderUp + 25}))
+    .union(armHole({length: pillarHole + 4 + 4, d:4, x1: rightmost - 5, y: motorHolderUp + 40}))
 
+    // motor mount
     .union(upperInnerCubeCyl.scale([1, -1, -1]).translate([0, rightmost + innerRadius, gliderOuterDiam + innerRadius])
       .union(upperInnerCubeCyl.scale([1, -1, 1]).translate([0, rightmost + innerRadius, -innerRadius]))
-      .union(cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam, motorHolderOut + wallThickness + 0.1, gliderOuterDiam]).translate([0, rightmost, 0]))
+      .union(cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam, motorHolderOut + wallThickness + 0.1, gliderOuterDiam])
+        .translate([0, rightmost, 0]))
 
       .union(cylinder({r: motorHolderSide / 2, h: gliderOuterDiam})
         .subtract(cylinder({r: (motorHolderSide - 2 * wallThickness) / 2, h: gliderOuterDiam}).translate([0, 0, 2]))
@@ -86,11 +94,18 @@ function main() {
       .translate([0, 0, motorHolderUp])
     )
 
-    .union(holder().translate([0, 0, gliderHeight + 1]))
+    // .union(holder().translate([0, 0, gliderHeight + 1]))
     .translate([0, 0, 20])
-    .union(new cylinder({r:pillarHole / 2, h: pillarHeight, fn:128}))
-    .setColor(.8, .7, .3)
+    .subtract(new cylinder({r:pillarHole / 2, h: pillarHeight, fn:128}))
+    .subtract(cube().translate([-0.5, 0, 0]).scale(100).translate([0, cutY, 0]))
+    // glue bar
+    .union(cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam - 4, motorHolderOut - 2, gliderOuterDiam - 4])
+      .translate([0, rightmost, motorHolderUp + 20 + 2]))
 
+    .setColor(.8, .7, .3)
+    // .rotateY(90)
+
+  // glider that can be fixed to pillar with screw
   function holder() {
     return cube().translate([-0.5, 0, 0]).scale([pillarHole + 4, pillarHole + gripScrewDiam + 5 + pillarClearance - 1, fixedPartHeight])
     .translate([0, -(pillarHole / 2 + gripScrewDiam + 5), 0])
@@ -103,7 +118,8 @@ function main() {
 
 
 function armHole(conf) {
-  var h = hull( circle(conf.d / 2),circle(conf.d / 2).translate([0, conf.x2 - conf.x1, 0]) ).translate([-conf.d / 2, -conf.d / 2]);
+  var x2 = conf.x2 || conf.x1;
+  var h = hull( circle(conf.d / 2),circle(conf.d / 2).translate([0, x2 - conf.x1, 0]) ).translate([-conf.d / 2, -conf.d / 2]);
   var hole = linear_extrude({ height: conf.length }, h);
   return hole.translate([0, 0, -conf.length / 2]).rotateY(90)
     .translate([0, conf.x1, conf.y])
