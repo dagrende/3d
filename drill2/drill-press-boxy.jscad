@@ -61,7 +61,7 @@ function main() {
     .union(
       gliderAggregate(arcRadius - stemYSize)
     )
-    // between top and bottom glider aggregate
+    // stem between top and bottom glider aggregate
     .union(stem.scale([gliderOuterDiam, 1, 1]))
     // guiding bar gliding against holder
     .union(stem.scale([gliderOuterDiam - 10, 1, 1]).translate([0, -innerRadius + 1, 0]))
@@ -94,10 +94,14 @@ function main() {
       .translate([0, 0, motorHolderUp])
     )
 
-    // .union(holder().translate([0, 0, gliderHeight + 1]))
+    .union(
+      holder().translate([0, 0, gliderHeight + 1])
+      .subtract(innerCubeCyl.cube.subtract(innerCubeCyl.cylinder.translate([0, 0, innerRadius])).translate([0, 10, gliderHeight + 1]))
+      .subtract(stem.scale([gliderOuterDiam - 10 + 0.6, 1, 1]).translate([0, -innerRadius + 1 - 0.6, 0]))
+    )
     .translate([0, 0, 20])
     .subtract(new cylinder({r:pillarHole / 2, h: pillarHeight, fn:128}))
-    .subtract(cube().translate([-0.5, 0, 0]).scale(100).translate([0, cutY, 0]))
+
     // glue bar
     .union(cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam - 4, motorHolderOut - 2, gliderOuterDiam - 4])
       .translate([0, rightmost, motorHolderUp + 20 + 2]))
@@ -107,12 +111,15 @@ function main() {
 
   // glider that can be fixed to pillar with screw
   function holder() {
-    return cube().translate([-0.5, 0, 0]).scale([pillarHole + 4, pillarHole + gripScrewDiam + 5 + pillarClearance - 1, fixedPartHeight])
+    return cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam, pillarHole + gripScrewDiam + 7.5 + pillarClearance - 1, fixedPartHeight])
     .translate([0, -(pillarHole / 2 + gripScrewDiam + 5), 0])
+
     .union(armHole({length: pillarHole + 4 + 4, d:4, x1: pillarHole / 2, x2: pillarHole / 2, y: fixedPartHeight / 2}))
+
     .subtract(cube().translate([-0.5, -1, 0]).scale([1, 20, fixedPartHeight]))
-    .subtract(armHole({length: 100, d: gripScrewDiam, x1: -(pillarHole + gripScrewDiam + 5) / 2, x2: -(pillarHole + gripScrewDiam + 5) / 2, y: fixedPartHeight / 2}))
+    .subtract(armHole({length: 100, d: gripScrewDiam, x1: -(pillarHole + gripScrewDiam + 5) / 2, y: fixedPartHeight / 2}))
     .subtract(cylinder({r: 4, h: 3, fn: 6}).rotateY(90).translate([gliderOuterDiam / 2 - 2, -(pillarHole + gripScrewDiam + 5) / 2, fixedPartHeight / 2]))
+    .subtract(stem.scale([gliderOuterDiam - 10 + 10.9, 1, 1]).translate([0, -innerRadius + 1 - 1.9, 0]))
   }
 }
 
