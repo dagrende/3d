@@ -38,7 +38,8 @@ function main() {
     motorHolderUp = 13
     rightmost = gliderHeight + gliderOuterDiam / 2 + pillarClearance,
     motorHolderOut = 12,
-    cutY = rightmost + innerRadius + 1;
+    cutY = rightmost + innerRadius + 1,
+    pillarHole = new cylinder({r:pillarHoleDiam / 2, h: pillarHeight, fn:128});
 
   function gliderAggregate(out) {
     return cylinder({r: gliderOuterDiam / 2, h: gliderHeight, fn:64})
@@ -57,10 +58,35 @@ function main() {
     .scale([1, gliderHeight, upperHolderUp - gliderHeight])
     .translate([0, gliderOuterDiam / 2 + pillarClearance, gliderHeight]);
 
-  // return lever().setColor(0.8, 0.8, 0.8);
+  if (false) {  // true to layout for 3d-printing all parts
+    // assembled drill
+    return union(
+      mainPart(true),
+      mainPart(false),
+      union(
+        holder(),
+        lockKnob(),
+        lever().translate([0, rightmost - 15, gliderHeight / 2])
+      ).translate([0, 0, gliderHeight + 1])
+    ).translate([0, 0, 50])
+    .union(pillarHole)
+    .setColor(.8, .7, .3)
+  } else {
+    // drill parts layed out for 3d printing
+    return union(
+      mainPart(true).subtract(pillarHole).lieFlat(),
+      holder().subtract(pillarHole).lieFlat().rotateZ(90).translate([-5, -15, 0]),
+      lockKnob().lieFlat().translate([40, 25, 0]),
+      union(
+        mainPart(false).subtract(pillarHole).lieFlat().translate([0, 10, 0]),
+        lever().lieFlat()
+      ).rotateZ(90).translate([-10, 50, 0])
+    )
+    .setColor(.8, .7, .3)
+  }
 
-  function mainPart() {
-    return gliderAggregate(arcRadius - stemYSize).translate([0, 0, springHeight + gliderHeight + fixedPartHeight])
+  function mainPart(verticalPart) {
+    var part = gliderAggregate(arcRadius - stemYSize).translate([0, 0, springHeight + gliderHeight + fixedPartHeight])
     .union(gliderAggregate(arcRadius - stemYSize))
     // stem between top and bottom glider aggregate
     .union(stem.scale([gliderOuterDiam, 1, 1]))
@@ -78,8 +104,6 @@ function main() {
       .union(innerCubeCyl.cube.subtract(innerCubeCyl.cylinder.translate([0, 0, innerRadius]))
       .translate([0, gliderOuterDiam / 2 + pillarClearance - innerRadius, gliderHeight]))
       .union(armHole({length: pillarHoleDiam + 4 + 4, d:4, x1: rightmost, y: motorHolderUp + 5}))
-      .union(armHole({length: pillarHoleDiam + 4 + 4, d:4, x1: rightmost - 5, y: motorHolderUp + 25}))
-      .union(armHole({length: pillarHoleDiam + 4 + 4, d:4, x1: rightmost - 5, y: motorHolderUp + 40}))
 
       // motor mount
       .union(upperInnerCubeCyl.scale([1, -1, -1]).translate([0, rightmost + innerRadius, gliderOuterDiam + innerRadius])
@@ -90,44 +114,24 @@ function main() {
       .union(cylinder({r: motorHolderSide / 2, h: gliderOuterDiam})
       .subtract(cylinder({r: (motorHolderSide - 2 * wallThickness) / 2, h: gliderOuterDiam}).translate([0, 0, 2]))
       .subtract(motorHoles())
-      // .union(cylinder({r: 1, h: 80}).translate([0, 0, -40]))
       .translate([0, rightmost + motorHolderSide / 2 + motorHolderOut, 0]))
       .translate([0, 0, motorHolderUp])
     )
 
-    .union(
-      holder()
-      // .union(lever().translate([0, 0, gliderHeight / 2]))
-      .translate([0, 0, gliderHeight + 1])
-    )
-    // .translate([0, 0, 20])
-    //
-    //
-    if (false) {
-      if (true) {
-        mainPart = mainPart.subtract(cube().translate([-0.5, 0, 0]).scale(100).translate([0, cutY, 0]))
-        // glue bar
-        .union(cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam - 4, motorHolderOut - 2, gliderOuterDiam - 4 + 0.6])
-        .translate([0, rightmost, motorHolderUp + 2]))
-      } else {
-        mainPart = mainPart.intersect(cube().translate([-0.5, 0, 0]).scale(100).translate([0, cutY, 0]))
-        // glue bar hole
-        .subtract(cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam - 4 + 0.5, motorHolderOut - 2 + 0.5, gliderOuterDiam - 4 + 0.6])
-        .translate([0, rightmost, motorHolderUp + 2 - 0.25]))
-      }
+    if (verticalPart) {
+      part = part.subtract(cube().translate([-0.5, 0, 0]).scale(100).translate([0, cutY, 0]))
+      // glue bar
+      .union(cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam - 4, motorHolderOut - 2, gliderOuterDiam - 4 + 0.6])
+      .translate([0, rightmost, motorHolderUp + 2]))
+    } else {
+      part = part.intersect(cube().translate([-0.5, 0, 0]).scale(100).translate([0, cutY, 0]))
+      // glue bar hole
+      .subtract(cube().translate([-0.5, 0, 0]).scale([gliderOuterDiam - 4 + 0.5, motorHolderOut - 2 + 0.5, gliderOuterDiam - 4 + 0.6])
+      .translate([0, rightmost, motorHolderUp + 2 - 0.25]))
     }
+
+    return part;
   }
-
-
-    // var part = mainPart()
-    // .rotateY(90)
-
-    var part = holder().union(lockKnob());
-    part = lockKnob();
-
-    return part
-      .subtract(new cylinder({r:pillarHoleDiam / 2, h: pillarHeight, fn:128}))
-      .setColor(.8, .7, .3);
 
   function lockKnob() {
     var n = 16;
