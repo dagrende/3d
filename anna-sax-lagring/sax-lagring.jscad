@@ -7,7 +7,7 @@ function main() {
     fyd = 30,   // flänsytterdiam
     ft = 1,     // flänstjocklek
     rr = vt * 0.8,  // rundningsradie
-    fn = 128,
+    fn = 32,
     del = kyd => cylinder({r: kyd / 2 + vt, h: kh + ft, fn: fn})
     .union(cylinder({r: fyd / 2, h: ft, fn: fn}))
     .subtract(cylinder({r: kyd / 2, h: kh, fn: fn}).translate([0, 0, ft]))
@@ -23,5 +23,5 @@ function main() {
       // .rotateX(180).translate([0, 0, 40])
       .translate([fyd + 2, 0, 0])
   ).translate([-fyd / 2, 0, 0])
-  // .subtract(cube().translate([-0.5, 0, 0]).scale(100 ));
+  .subtract(cube().translate([-0.5, 0, 0]).scale(100 ));
 }
