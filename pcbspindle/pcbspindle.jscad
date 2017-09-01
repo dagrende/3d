@@ -7,13 +7,14 @@ function main() {
     bbwidth = bbouterdiam + 4,
     bbout = depth + bbouterdiam + 6,
     gripboltDiam = 3,
-    width = bbwidth + height * 1.5,
-    fastenHole = cylinder({r: 2, h: 100}).rotateX(-90).translate([(width + bbwidth) / 4, 0, height / 2]),
+    width = 27, //bbwidth + height * 1.5,
+    fastenHoleX = 9.75, //(width + bbwidth) / 4,
+    fastenHole = cylinder({r: 2, h: 100}).rotateX(-90).translate([fastenHoleX, 0, height / 2]),
     gripHoleY = depth + bbouterdiam + gripboltDiam / 2 + 1;
 
   console.log('workpiece:');
   console.log('  width', width);
-  console.log('  depth', depth + bbout);
+  console.log('  depth', bbout);
   console.log('  height', height);
   console.log('  ball bearing hole y', depth + bbradius);
   console.log('  grip screw hole y', gripHoleY);
