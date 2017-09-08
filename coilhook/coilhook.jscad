@@ -28,14 +28,16 @@ function main() {
       .subtract(cube().translate([0, -0.5, -0.5]).scale(30).translate([shaftTip.x, 0, 0]))
       .union(plug.translate([shaftTip.x, shaftTip.y, shaftTip.z]))
       .translate([-shaftTip.x, -shaftTip.y, -shaftTip.z]);
-  return hook
 
-
-  // show hooks in use around a masonite disk
-  let seq = n => Array.apply(null, {length: n}).map(Function.call, Number),
+  if (true) {
+    return hook
+  } else {
+    // show hooks in use around a masonite disk
+    let seq = n => Array.apply(null, {length: n}).map(Function.call, Number),
     angles = n => seq(n).map(i => i * 360.0 / n),
     board = cylinder({r: 200, h: boardt}).subtract(cylinder({r: 3, h:boardt})),
     hooks = angles(20).map(v => hook.rotateY(90).translate([190, 0, boardt]).rotateZ(v));
 
-  return board.union(hooks)
+    return board.union(hooks)
+  }
 }
