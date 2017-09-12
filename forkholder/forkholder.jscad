@@ -1,38 +1,52 @@
 function main() {
-  let height = 10,
+  let height = 20,
     plateT = 3,
-    plateW = 10,
-    dipDown = 4,
-    dipW = 5.8,
-    screwIn = 5,
-    screwHeadD = 6.5,
+    plateW = 20,
+    dipDown = .7,
+    dipW = 6 + .8,
+    screwD = 5 + .5,
+    screwUp = 6,
+    screwHeadD = 8,
     screwHeadDown = plateT,
     screwHeadIn = plateT - 0.5,
-    screwhole = cylinder({r1: 2.1, r2: 0.9, h:plateT + dipDown})
-      .union(cylinder({r: screwHeadD / 2, h:screwHeadIn}))
-      .translate([0, 0, -plateT]).rotateX(90),
-    screwSlitW = .5,
-    screwSlitIn = 2.7,
-    screwSlitCornerD = 1,
-    dipSlitW = 1.3,
-    dipSlitIn = 1.5,
-    dipSlitCornerD = 1.3;
+    screwOut = 5,
+    forkW = 13.2,
+    forkH = 10,
+    forkT = 6 + .3,
+    forkGapW = 4.9,
+    forkWMarg = 5,
+    forkPlateT = 2,
+    forkUp = 11,
+    forkHole = cube().scale([forkPlateT, forkW, forkT]);
 
-  let part = union(
-    // plate on top of profile
-    cube().scale([plateW, plateT, height]),
-    // part dipping into profile
-    cube().translate([0, -1, 0]).scale([dipW / 2, dipDown, height])
-      // slit to make plate-dip hinge
-      .subtract(cube().translate([0, -1, 0]).scale([10, dipSlitW, height]).translate([dipW / 2 - dipSlitIn, 0, 0]))
-      .subtract(cylinder({r:dipSlitCornerD / 2, h:height}).translate([dipW / 2 - dipSlitIn , -dipSlitCornerD / 2, 0]))
-      // slit to make dip separatable by screw
-      .subtract(cube().translate([0, -1, 0]).scale([screwSlitW / 2, 10, height]).translate([0, -dipDown + screwSlitIn, 0]))
-      .subtract(cylinder({r:screwSlitCornerD / 2, h:height}).translate([0, -dipDown + screwSlitIn, 0]))
-  )
-    // conical holes for separating screws
-    .subtract(screwhole.translate([0, 0, screwIn]))
-    // .subtract(screwhole.translate([0, 0, height - screwIn]))
+  function holder(height, vertical) {
+    let base = union(
+      // plate on top of profile
+      cube().translate([-0.5, 0, 0]).scale([plateW, plateT, height]),
+      // part dipping into profile
+      cube().translate([-0.5, -1, 0]).scale([dipW, dipDown, height]),
+      // screw head seat
+      cylinder({r: screwHeadD / 2, h: screwOut}).rotateX(-90).translate([0, 0, screwUp])
 
-  return part.union(part.mirroredX())
+    ).subtract(cylinder({r: screwD / 2, h: 100, center: true}).rotateX(90).translate([0, 0, screwUp]));
+    if (vertical) {
+      return base
+          .union(
+            // fork mounting plate
+            cube().translate([0, 0, 0]).scale([forkPlateT, forkW + forkWMarg, height])
+              // fork hole
+              .subtract(forkHole.translate([0, forkWMarg / 2, forkUp])).translate([-plateW / 2 + 15, plateT, 0])
+          )
+    } else {
+      return base
+          .union(
+            // fork mounting plate
+            cube().translate([0, 0, 0]).scale([forkPlateT, 20, height])
+              // fork hole
+              .subtract(cube().scale([forkPlateT, forkT, forkW]).translate([0, 11, height - forkW - forkWMarg / 2])).translate([-plateW / 2 + 15, plateT, 0])
+          )
+    }
+  }
+
+  return holder(height + 7, false);
 }
