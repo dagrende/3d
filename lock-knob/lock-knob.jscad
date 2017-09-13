@@ -17,7 +17,7 @@ function lockKnob(screwD, nutFlatD) {
     .union(cylinder({r1: 4, r2: 8, h: 5}).translate([0, 0, 2]))
     .union(cylinder({r: 8, h: 5}).translate([0, 0, 7]))
     .subtract(union(seq(n).map(i => cylinder({r: 1, h: 10}).translate([0, 8.5, 5]).rotateZ(i * 360 / n))))
-    .subtract(cylinder({r: 6, h: 5}).translate([0, 0, 7]))
-    .subtract(cylinder({r: screwD / 2 + 0.3, h: 20}))
-    .subtract(cylinder({r: nutMaxD / 2 + .3, h: 20, fn: 6}).translate([0, 0, 0]).translate([0, 0, 4]))
+    .subtract(cylinder({r: 6.5, h: 5}).translate([0, 0, 8]))
+    .subtract(cylinder({r: screwD / 2 + 0.1, h: 20}))
+    .subtract(cylinder({r: nutMaxD / 2 + 0.3, h: 20, fn: 6}).translate([0, 0, 6]))
 }
