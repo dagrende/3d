@@ -7,7 +7,7 @@ function main() {
     innerDepth = 5,
     innerOutHeight = 6,
     innerOutDepth = 6,
-    outerWidth = 15,
+    outerWidth = 25,
     outerDepth = 10,
     outerHeight = 15,
     outerInHeight = 6 + .4,
@@ -20,9 +20,9 @@ function main() {
   .subtract(cylinder({r: screwD / 2, h: innerDepth + innerOutDepth}).rotateX(90).translate([0, innerDepth, 0]));
 
   let outerPart =
-    cube({center: [true, false, true]}).scale([outerWidth, -outerDepth, outerHeight])
+    cube({center: [true, false, true]}).scale([outerWidth, -outerDepth, outerHeight]).translate([(outerWidth - innerWidth) / 2, 0, 0])
     .subtract(cube({center: [true, false, true]}).scale([outerWidth, outerInDepth, outerInHeight]).translate([0, -outerInDepth, 0]))
-    .subtract(cylinder({r: screwD / 2 + .25, h: outerDepth}).rotateX(90));
+    .subtract(cylinder({r: screwD / 2 + .25, h: outerDepth}).rotateX(90).translate([0, 0, 0]));
 
   if (true) {
     // show assembled
