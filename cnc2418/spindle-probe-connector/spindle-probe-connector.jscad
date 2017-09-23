@@ -1,3 +1,8 @@
+// a thing that when put on the motor axle makes two cables connect to the axle.
+// this is used for the mill bit end of the probing.
+// By using two contacs, it will be possible to implement a safer
+// probe, that checks that the connector is really in contact
+// with the axle.
 function main() {
   let
     cavitySepT = 1.5,
