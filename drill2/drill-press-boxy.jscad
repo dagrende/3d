@@ -58,7 +58,7 @@ function main() {
     .scale([1, gliderHeight, upperHolderUp - gliderHeight])
     .translate([0, gliderOuterDiam / 2 + pillarClearance, gliderHeight]);
 
-  if (false) {  // true to layout for 3d-printing all parts
+  if (true) {  // true to layout for 3d-printing all parts
     // assembled drill
     return union(
       mainPart(true),

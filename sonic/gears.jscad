@@ -11,7 +11,7 @@ function main() {
 				});
   var gear2 = new Gear({
 					circularPitch: 4,
-					pressureAngle: 20, 
+					pressureAngle: 20,
 					clearance: .05,
 					backlash: .05,
 					toothCount: -36,
@@ -22,7 +22,7 @@ function main() {
   var gearSet = new GearSet(
 		gear1,
 		gear2,
-		3);
+		2);
 	var shape = gearSet.createShape();
   return shape.extrude({offset: [0, 0, 3]})
 }
