@@ -33,9 +33,8 @@ function iterateCurveSides(curve, f) {
   }
 }
 
-//**** make lines between shapes scaled according to curve bend angle, to form bodies that are unioned togehter
-
-function followCurve(curve, shape) {
+// move shape along curve to make a body
+function curve_extrude(curve, shape) {
   let polygons = [];
   iterateCurveSides(curve, function(s0, s1, s2) {
     // s0.vertex1.pos
@@ -71,7 +70,7 @@ function followCurve(curve, shape) {
 }
 
 function main() {
-  let curve = circle({r: 1, fn: 3, center: true});
+  let curve = circle({r: 4, fn: 3, center: true});
   let shape = circle({center: true});
-  return curve//followCurve(curve, shape)//.subtract(cube().scale(100).translate([0, 0, -50]));
+  return curve_extrude(curve, shape)//.subtract(cube().scale(100).translate([0, 0, -50]));
 }
