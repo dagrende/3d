@@ -1,8 +1,15 @@
 //include("lib.jscad");
 let extras = [];
 function main() {
-   let obj = cube(4).subtract(cube().scale([1, 1, 100]));
-   console.log(obj);
+  if (true) {
+    // tests
+    testSuite();
+    return cube();
+  }
+  let obj = cube(4)
+    .subtract(cube().scale([1.5, 1, 100]))
+    .subtract(cube(4).translate([0, -4, 0]).rotateX(10).translate([0, 1, 4]));
+  console.log(obj);
   //  // obj.polygons.forEach(p=>p.shared = new CSG.Polygon.Shared([Math.random(), Math.random(), Math.random(), 1]));
   //  // console.log(getuniqueVertices(obj));
   let edges = getUniqueEdges(obj);
@@ -19,19 +26,26 @@ function main() {
   return obj.union(extras)
 }
 
-*** all poygons are convex, one polygon segment can in the middle touch another polygon vertex
+// *** all poygons are convex, one polygon segment can in the middle touch another polygon vertex
 
 // returns a map of
 function getUniqueEdges(s) {
-  let csg = s.reTesselated();
+  let csg = s.reTesselated().canonicalized();
+
+  // csg.polygons[6].vertices.splice(2, 0, csg.polygons[7].vertices[3]);
+  // csg.polygons[9].vertices.splice(4, 0, csg.polygons[8].vertices[2
+
+  // if any other vertices between any pair of polygon vertices, add the vertices the polygon
+
+
   let edges = [];
-  csg.polygons.forEach(p => {
+  csg.polygons.forEach((p, i) => {
     console.log(p);
-    iteratePolygonSides(p, (v0, v1, v2, v3) => {
+    iteratePolygonSides(p, (v0, v1, j) => {
       let key0 = posString(v0.pos) + '-' + posString(v1.pos),
           key1 = posString(v1.pos) + '-' + posString(v0.pos),
           key = key0 < key1 ? key0 : key1
-          console.log(key0, key1);
+          console.log(key0);
       let edge = edges[key];
       if (edge) {
         edge.polygons.push(p);
@@ -85,20 +99,53 @@ function addCube(pos, colorName) {
   extras.push(cube({size: 0.1, center: true}).translate(pos).setColor(css2rgb(colorName || 'red')));
 }
 
+// for every pair of the n vertices around polygon p, call f(v0, v1, i)
+// v0, v1 is the vertex pair and i is the pair index 0..n-1
 function iteratePolygonSides(p, f) {
   let mod = (n, m) => (n % m + m) % m,
-    vs = p.vertices,
-    n = vs.length,
-    v0 = vs[0],
-    v1 = vs[1],
-    v2 = vs[2],
-    v3 = vs[mod(3, n)];
-  for (let i = 4; i < n + 4; ++i) {
-    f(v0, v1, v2, v3);
-    v0 = v1;
-    v1 = v2;
-    v2 = v3;
-    v3 = vs[mod(i, n)];
+    vs = p.vertices;
+  for (let i = 0; i < vs.length; ++i) {
+    f(vs[i], vs[mod(i + 1, vs.length)], i);
+  }
+}
+
+function testSuite() {
+  let tests = [iteratePolygonSidesTest];
+  tests.forEach(f => {
+    try {
+      f();
+      console.log(f.name, 'OK');
+    } catch (err) {
+      console.log(f.name, 'failure: ', err);
+    }
+  })
+}
+
+function iteratePolygonSidesTest() {
+  let c = cube(), prevV1, previ, firstV0, lastV1,
+    p = c.polygons[0];
+  iteratePolygonSides(p, (v0, v1, i) => {
+    if (!firstV0) {
+      firstV0 = v0;
+    }
+
+    if (prevV1) {
+      if (!v0.pos.equals(prevV1.pos)) {
+        throw "v0 not equal to previous v1";
+      }
+    }
+    prevV1 = v1;
+
+    if (previ) {
+      if (i !== (previ + 1)) {
+        throw 'i is not previ + 1'
+      }
+    }
+    previ = i;
+    lastV1 = v1;
+  });
+  if (!lastV1.pos.equals(firstV0.pos)) {
+    throw "lastV1 not equal to firstV0";
   }
 }
 
