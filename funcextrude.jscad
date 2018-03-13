@@ -2,10 +2,16 @@ function main() {
   return moebius().setColor([.5, .5, .5]);
 }
 
-function moebius() {
+function moebius1() {
   let curve = circle({r: 20, fn: 256, center: true});
   let shape = square([10, 1]).translate([-5, -.5, 0]).rotateZ(10);
   return curve_extrude(curve, (i, n) => shape.rotateZ(10 + i * 180 / n))
+}
+
+function moebius() {
+  let curve = circle({r: 50, fn: 256, center: true});
+  let shape = circle({r: 1.5, fn: 128, center: true}).scale([6, 1]);
+  return curve_extrude(curve, (i, n) => shape.rotateZ(10 + i * 180 / n)).scale(0.7)
 }
 
 function trumpet() {
@@ -37,16 +43,14 @@ function curve_extrude(curve, shapeOrF) {
     let shape1 = shapeOrF;
     if (typeof shapeOrF === "function") {
       shape0 = shapeOrF(i, n);
-      shape1 = shapeOrF((i + 1) % n, n);
+      shape1 = shapeOrF(i + 1, n);
     }
-    // s0.vertex1.pos
-    // s1.pos.unit().plus(s2.pos.unit()).unit()
-    // s1.pos.cross(s2.pos).unit
+    // angle between two vectors of any length
     function angle(s0, s1) {
       let s0dir = s0.direction(), s1dir = s1.direction();
       return acos(s0dir.dot(s1dir) / (s0dir.length() * s1dir.length()))
     }
-
+    // scaling for projection at corner of segments s1 and s2
     function scaling(s0, s1) {
       let v2 = angle(s0, s1) / 2,
         tanv2 = tan(v2);
