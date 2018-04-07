@@ -1,17 +1,11 @@
 function main() {
-  return moebius().setColor([.5, .5, .5]);
+  return rope_ring().setColor([.6, .6, .6]);
 }
 
-function moebius1() {
-  let curve = circle({r: 20, fn: 256, center: true});
-  let shape = square([10, 1]).translate([-5, -.5, 0]).rotateZ(10);
-  return curve_extrude(curve, (i, n) => shape.rotateZ(10 + i * 180 / n))
-}
-
-function moebius() {
-  let curve = circle({r: 50, fn: 256, center: true});
-  let shape = circle({r: 1.5, fn: 128, center: true}).scale([6, 1]);
-  return curve_extrude(curve, (i, n) => shape.rotateZ(10 + i * 180 / n)).scale(0.7)
+function frame() {
+  let curve = square([18, 24]);;
+  let shape = square(3).translate([-1, -1]).subtract(square(3));
+  return curve_extrude(curve, shape)
 }
 
 function trumpet() {
@@ -20,22 +14,37 @@ function trumpet() {
   return curve_extrude(curve, shape)
 }
 
-function iterateCurveSides(curve, f) {
-  let mod = (n, m) => (n % m + m) % m,
-    sides = curve.sides,
-    n = sides.length,
-    s0 = sides[0],
-    s1 = sides[1],
-    s2 = sides[2];
-  for (let i = 3; i < n + 3; ++i) {
-    f(s0, s1, s2, i - 3, n);
-    s0 = s1;
-    s1 = s2;
-    s2 = sides[mod(i, n)];
+function moebius_square() {
+  let curve = circle({r: 20, fn: 256, center: true});
+  let shape = square([10, 1]).translate([-5, -.5, 0]).rotateZ(10);
+  return curve_extrude(curve, (i, n) => shape.rotateZ(i * 180 / n))
+}
+
+function moebius_oval() {
+  let curve = circle({r: 50, fn: 256, center: true});
+  let shape = circle({r: 1.5, fn: 128, center: true}).scale([6, 1]);
+  return curve_extrude(curve, (i, n) => shape.rotateZ(i * 180 / n)).scale(0.7)
+}
+
+function rope_ring() {
+  let curve = circle({r: 15, fn: 32, center: true});
+  return curve_extrude(curve, (i, n) => rope(5.0, i * 360 * 1 / n, 2))
+}
+
+function rope(r, rot, depth) {
+  if (depth == 0) {
+    return circle({r: r, center: true})
+  } else {
+    return union([0, 1, 2, 3, 4].map(i=>
+      rope(r/2, rot, depth - 1)
+        .translate([r/2, 0])
+        .rotateZ(i * 360/5 + 25 + rot)))
   }
 }
 
-// extrude shape along curve
+// Extrudes a shape along a curve.
+// The curve is a 2d shape with a border.
+// shapeOrF is a 2d shape or a function returning a 2d shape. The function is called with (i, n) where i is 0..n. So i and n represents the same place on the curve.
 function curve_extrude(curve, shapeOrF) {
   let polygons = [];
   iterateCurveSides(curve, function(s0, s1, s2, i, n) {
@@ -73,4 +82,19 @@ function curve_extrude(curve, shapeOrF) {
     polygons = polygons.concat(segPolys);
   });
   return CSG.fromPolygons(polygons);
+}
+
+function iterateCurveSides(curve, f) {
+  let mod = (n, m) => (n % m + m) % m,
+    sides = curve.sides,
+    n = sides.length,
+    s0 = sides[0],
+    s1 = sides[1],
+    s2 = sides[2];
+  for (let i = 3; i < n + 3; ++i) {
+    f(s0, s1, s2, i - 3, n);
+    s0 = s1;
+    s1 = s2;
+    s2 = sides[mod(i, n)];
+  }
 }

@@ -1,5 +1,6 @@
 function main() {
-  var motorHolderSide = 35,
+  var printLayout = false,  // true to layout for 3d-printing all parts
+    motorHolderSide = 35,
     motorHolderLength = 60,
     motorHolderHeightElevation = 60,
     motorPillarY = 12,
@@ -58,7 +59,19 @@ function main() {
     .scale([1, gliderHeight, upperHolderUp - gliderHeight])
     .translate([0, gliderOuterDiam / 2 + pillarClearance, gliderHeight]);
 
-  if (true) {  // true to layout for 3d-printing all parts
+  if (printLayout) {
+    // drill parts layed out for 3d printing
+    return union(
+      mainPart(true).subtract(pillarHole).lieFlat(),
+      holder().subtract(pillarHole).lieFlat().rotateZ(90).translate([-5, -15, 0]),
+      lockKnob().lieFlat().translate([40, 25, 0]),
+      union(
+        mainPart(false).subtract(pillarHole).lieFlat().translate([0, 10, 0]),
+        lever().lieFlat()
+      ).rotateZ(90).translate([-10, 50, 0])
+    )
+    .setColor(.8, .7, .3)
+  } else {
     // assembled drill
     return union(
       mainPart(true),
@@ -70,18 +83,6 @@ function main() {
       ).translate([0, 0, gliderHeight + 1])
     ).translate([0, 0, 50])
     .union(pillarHole)
-    .setColor(.8, .7, .3)
-  } else {
-    // drill parts layed out for 3d printing
-    return union(
-      mainPart(true).subtract(pillarHole).lieFlat(),
-      holder().subtract(pillarHole).lieFlat().rotateZ(90).translate([-5, -15, 0]),
-      lockKnob().lieFlat().translate([40, 25, 0]),
-      union(
-        mainPart(false).subtract(pillarHole).lieFlat().translate([0, 10, 0]),
-        lever().lieFlat()
-      ).rotateZ(90).translate([-10, 50, 0])
-    )
     .setColor(.8, .7, .3)
   }
 
