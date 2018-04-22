@@ -1,19 +1,17 @@
 function main() {
-  const
-  ria = 1, ra = 3.7,
-  rib = 3, rb = 4,
-  h = 8;
+  return snapKnob(1, 3.7, 3, 4, 10);
+}
+
+function snapKnob(ria = 1, ra = 3.7, rib = 3, rb = 4, h = 8) {
   return rotate_extrude(
-  polygon([ [0,0],[0, h], [-rb+rib, h], [-rb+rib, h - rib],
+  polygon([ [.1,0],[.1, h], [-rb+rib, h], [-rb+rib, h - rib],
     [-rb, h - rib], // tangent to b will be here
     [-ra, ria],   // tangent to a will be here
     [-ra-ria, ria] , [-ra-ria, 0]])
   .union(circle(rib).center().translate([-rb+rib, h - rib, 0]))
   .subtract(circle(ria).center().translate([-ra-ria, ria, 0]))
   .intersect(polygon([ [0,0],[0, h],[-rb, h],[-ra-ria, 0]]))
-     )
-
-
+     ).setColor(0.99, 0.99, 0.99)
 }
 
 // return array of the two points where the circles defined by p1, r1 and p2, r2 crosses
