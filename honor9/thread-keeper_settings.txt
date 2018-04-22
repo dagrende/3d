@@ -1,0 +1,16 @@
+Estimated print time: 0h 30m
+Material usage: 1.36m (3g)
+Printer: Zortrax M200
+Profile: Last settings
+Material: Z-ULTRAT
+Layer: 0.19 mm
+Quality: High
+Infill: 70%
+Fan speed: 56%
+Seam: Random
+Outer contours: 0.00
+Holes: 0.00
+Surface layers Top: 6
+Surface layers Bottom: 3
+Support Lite: No
+Smart bridges: Yes
