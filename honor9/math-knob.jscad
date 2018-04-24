@@ -1,10 +1,10 @@
 function main() {
-  return snapKnob(1, 3.7, 3, 4, 10);
+  return snapKnob(1, 3.9, 3, 4, 10);
 }
 
-function snapKnob(ria = 1, ra = 3.7, rib = 3, rb = 4, h = 8) {
+function snapKnob(ria = 1, ra = 4, rib = 3, rb = 4, h = 8) {
   return rotate_extrude(
-  polygon([ [.1,0],[.1, h], [-rb+rib, h], [-rb+rib, h - rib],
+  polygon([ [0,0],[0, h], [-rb+rib, h], [-rb+rib, h - rib],
     [-rb, h - rib], // tangent to b will be here
     [-ra, ria],   // tangent to a will be here
     [-ra-ria, ria] , [-ra-ria, 0]])
@@ -14,7 +14,8 @@ function snapKnob(ria = 1, ra = 3.7, rib = 3, rb = 4, h = 8) {
      ).setColor(0.99, 0.99, 0.99)
 }
 
-// return array of the two points where the circles defined by p1, r1 and p2, r2 crosses
+// return array of the two points where the
+// circles defined by p1, r1 and p2, r2 crosses
 // p1, p2 and results are {x, y}
 function circleCrossings(p1, r1, p2, r2) {
   const sqr = (x) => x * x,
