@@ -6,10 +6,11 @@ function main() {
   const width = 151.5,
     height = 74.1,
     thick = 10.5
-  const tr = 2,
+  const
+    tr = 2,
     out = 10,
-    front = 3,
     bendr = 3,
+    front = 3.5 - (bendr - tr),
     bend = torus({ri: tr, ro: bendr, fni: 32})
       .intersect(cube({size: bendr + tr, center: [false, false, true]})),
     hook1 = union(stack('y', align('+xz', [
@@ -19,22 +20,27 @@ function main() {
     ]))),
     hook = union(stack('x', align('+yz', [
       sphere({r: tr}).subtract(cube({size: tr * 2, center: [false, true, true]})),
-      cylinder({r: tr, h: front}).rotateY(90),
+      cylinder({r: tr, h: front - tr}).rotateY(90),
       hook1
     ]))),
-    hookBounds = hook.getBounds(),
-    mountPoint = [hookBounds[1].x - bendr - tr, hookBounds[0].y + tr, 0];
-    hook.properties.mount = new CSG.Connector(
-      mountPoint,
-      [0, -1, 0],
-      [0, 0, 1]);
+    hookBounds = hook.getBounds();
+    hookCenter = hook.translate([-hookBounds[1].x + bendr + tr, -hookBounds[0].y - tr, 0]).rotateX(90).rotateZ(-90);
 
     const barLength = phoneSize.x - bendr + tr;
     let bar = cylinder({r: tr, h: barLength, center: [true, true, true]}).rotateY(90);
-    bar.properties.leftMount = new CSG.Connector([-barLength / 2, 0, 0], [0, 1, 0], [0, 0, 1]);
-    bar.properties.rightMount = new CSG.Connector([barLength / 2, 0, 0], [0, 1, 0], [0, 0, 1]);
 
-    const hookLeft = hook.connectTo(hook.properties.mount, bar.properties.leftMount, false, 0);
-    const hookRight = hook.connectTo(hook.properties.mount, bar.properties.rightMount, true, 0);
-  return union(hookLeft, bar, hookRight).setColor(.95,.95,.45)
+    const hookLeft = hookCenter.rotateZ(-90).translate([-barLength / 2, 0, 0]);
+    const hookRight = hookCenter.rotateZ(90).translate([barLength / 2, 0, 0]);
+    const krampa = union(hookLeft, bar, hookRight);
+  return union(
+    krampa,
+    krampa.translate([0, phoneSize.y - 2 * 24, 0]),
+    cylinder({r: tr, h: phoneSize.y - 2 * 24 + 24, center: [true, true, false]}).rotateX(-90).translate([-barLength / 2 + 16, -24, 0]),
+    hookCenter.translate([-barLength / 2 + 16, -24, 0]),
+    cylinder({r: tr, h: phoneSize.y - 2 * 24 + 24, center: [true, true, false]}).rotateX(-90).translate([barLength / 2 - 16, -24, 0]),
+    hookCenter.translate([barLength / 2 - 16, -24, 0]),
+  ).setColor(.95,.95,.45)
 }
+
+// krampa 24 up
+// krampa y - 24 up
