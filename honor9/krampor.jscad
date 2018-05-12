@@ -94,8 +94,8 @@ function main() {
     }
 
   return [
-    //kramp().translate([0, -40, 0]).setColor(.95,.95,.45),
-    fixture.setColor(.95,.95,.45)
+    kramp().translate([0, -40, 0]).setColor(.95,.95,.45),
+    // fixture.setColor(.95,.95,.45)
   ]
 }
 

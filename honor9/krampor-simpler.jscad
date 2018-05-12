@@ -51,6 +51,18 @@ function main() {
     .subtract(cylinder({r: tr, h: 30, center: [true, true, true]}).rotateY(90))
     .subtract(cube({size: [30, 1.5, 30], center: true}))
     .subtract(cylinder({r: tr, h: 30, center: [true, true, true]}).rotateX(90))
+  const joint1 = cylinder({r: 6, h: 2 * tr, fn: 8, center: [true, true, true]}).rotateZ(360 / 16)
+    .rotateX(90)
+    .intersect(cube(20).center().translate([0, 0, 10]))
+    .subtract(cylinder({r: tr, h: 10, center: [true, true, false]}));
+  const jointEnd = cylinder({r: 6, h: 2 * tr, center: [true, true, true]}).rotateX(90);
+  const ext = 4;
+  const joint = jointEnd.translate([phoneSize.x / 2 - leftRightToKrampa + ext, 0, 0])
+    .union(jointEnd.translate([-phoneSize.x / 2 + leftRightToKrampa - ext, 0, 0]))
+    .union(cube().center().scale([phoneSize.x - 2 * leftRightToKrampa + ext, 2 * tr, 2 * 6]))
+    .intersect(cube().center().scale([phoneSize.x + 2 * ext, 2 * tr, 6]).translate([0, 0, 3]))
+    .subtract(cylinder({r: tr, h: 10, center: [true, true, false]}).translate([-phoneSize.x / 2 + leftRightToKrampa, 0, 0]))
+    .subtract(cylinder({r: tr, h: 10, center: [true, true, false]}).translate([phoneSize.x / 2 - leftRightToKrampa, 0, 0]));
 
   const hookLeft = hookCenter.rotateZ(-90).translate([-barLength / 2, 0, 0]);
   const hookRight = hookCenter.rotateZ(90).translate([barLength / 2, 0, 0]);
@@ -58,14 +70,17 @@ function main() {
   const stand = union(
     union(
       krampa,
-      CSG.cube({corner1: [0, 0, 0], corner2: [SDSize.x, SDSize.z / 2, SDSize.y]}).translate([-phoneSize.x / 2 + 27, 0, -tr]),
-      cylinder({d: 3.3, h: 10, center: [true, true, true]}).rotateX(90).translate([-phoneSize.x / 2 + 27 + SDSize.x + SDRightToPlugLeft + soundPlugD / 2, 5, 0])),
+      CSG.cube({corner1: [0, 0, -SDSize.y / 2], corner2: [SDSize.x, SDSize.z / 2, SDSize.y / 2]}).translate([-phoneSize.x / 2 + 27, 0, 0]),
+      cylinder({d: 3.2, h: 10, center: [true, true, true]}).rotateX(90).translate([-phoneSize.x / 2 + 27 + SDSize.x + SDRightToPlugLeft + soundPlugD / 2, 5, 0])
+    ).rotateX(180),
+    joint
+    //cylinder({r: 10, h: 6 * cos(360 / 16) + tr, center: [true, true, false]}).translate([0, 15, -tr])
 
-    union(align('-z', [
-      bottomHook,
-      bottomHook.translate([9, -6, 0]),
-      joints.translate([-10, 10, 0])
-    ])).rotateZ(180).translate([-55, -12, 0])
+    // union(align('-z', [
+    //   bottomHook,
+    //   bottomHook.translate([9, -6, 0]),
+    //   joints.translate([-10, 10, 0])
+    // ])).rotateZ(180).translate([-55, -12, 0])
   )
   return stand.setColor(.95,.95,.45)
 }
