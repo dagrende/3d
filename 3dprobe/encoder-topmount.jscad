@@ -31,9 +31,16 @@ function main() {
         .subtract(cableSlot.rotateY(90).rotateX(180).translate([0, 0, topToCable + 2]))
 
       ).setColor(0.95, 0.95, 0.95),
-    ball = sphere({r: 5, center: [true, true, false]})
-      .subtract(cylinder({d: 3, h: 5, center: [true, true, false]}))
-      .subtract(cylinder({d1: 3, d2: 0, h: 1.5, center: [true, true, false]}).translate([0, 0, 5]))
+    cone = cylinder({r1: 5, r2: 0, h: 25, center: [true, true, false]}).translate([0, 0, 3])
+      .union(cylinder({r: 5, h: 3, center: [true, true, false]})),
+    ball = sphere({r: 5, fn: 64, center: [true, true, false]})
+      .translate([0, 0, 18])
+      .subtract(cone)
+      .setColor(0.95, 0.95, 0.95),
+    coneCone = cone.subtract(cone.scale(.8))
+      .setColor(0.95, 0.95, 0.95),
+    pin = cone.scale(.8).subtract(cylinder({r: 6, h: 20, center: [true, true, false]}).translate([0, 0, 5]))
+      .union(cylinder({r: 4, h: 12, center: [true, true, false]}).translate([0, 0, -12]))
       .setColor(0.95, 0.95, 0.95),
     pillarOD = 39.9,
     pillarID = 36.2,
@@ -47,5 +54,5 @@ function main() {
     // cylinder({r: 5, h: 15, center: [true, true, false]})
 
 
-return [pillarHolder]
+return [pin, ball, coneCone, pillarHolder, mount, fodder]
 }
