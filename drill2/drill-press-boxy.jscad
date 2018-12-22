@@ -1,5 +1,5 @@
 function main() {
-  var printLayout = false,  // true to layout for 3d-printing all parts
+  var printLayout = true,  // true to layout for 3d-printing all parts
     motorHolderSide = 35,
     motorHolderLength = 60,
     motorHolderHeightElevation = 60,
